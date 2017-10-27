@@ -1,0 +1,57 @@
+---
+- name: Update cache
+  apt:
+    update_cache: yes
+- name: Install dependencies of packages
+  apt: pkg={{item}} state=installed
+  with_items:
+    - python-software-properties
+    - python-pycurl
+    - build-essential
+    - python-mysqldb
+    - curl
+    - git-core
+    - dbus
+    - libnss-myhostname
+- name: Install php
+  include_role:
+    name: php
+- name: Install database
+  include_role:
+    name: mariadb  
+- name: Create/assign database user to db and grant permissions
+  mysql_user: >
+    name={{ wp_db_user }}
+    password={{ wp_db_password }}
+    priv='{{ wp_db_name }}.*:ALL'
+    state=present
+    login_host={{ wp_db_host }}
+    login_user="root"
+    login_password={{ mysql_root_password }}
+
+- name: Create database for each site
+  mysql_db: >
+    name={{ wp_db_name }}
+    state=present
+    login_host={{ wp_db_host }}
+    login_user="root"
+    login_password={{ mysql_root_password }}
+  register: wp_mysql_db_create
+
+
+- name: Install wordpress
+  include_role:
+    name: darthwade.wordpress
+- name: Configure wordpress instance
+  include_role:
+    name: oefenweb.wordpress
+- name: Install and configure nginx frontend
+  include_role:
+    name: nginx 
+- name: Install ssh protection
+  include_role:
+    name: fail2ban 
+- name: Configure firewall
+  include_role:
+    name: ferm 
+

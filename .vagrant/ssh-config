@@ -1,0 +1,11 @@
+Host go-to-live-kata
+  HostName 127.0.0.1
+  User vagrant
+  Port 2222
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /Users/kevit/Projects/go-to-live-kata/.vagrant/machines/go-to-live-kata/virtualbox/private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+

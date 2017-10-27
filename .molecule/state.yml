@@ -1,0 +1,30 @@
+---
+converged: true
+created: true
+default_platform: null
+default_provider: null
+driver: vagrant
+driver_config:
+  current_platform: trusty64
+  current_provider: virtualbox
+  instances:
+  - ansible_groups:
+    - group1
+    name: go-to-live-kata
+    vm_name: go-to-live-kata
+  platforms:
+  - box: trusty64
+    box_url: https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box
+    name: trusty64
+  providers:
+  - name: virtualbox
+    options:
+      cpus: 2
+      memory: 512
+    type: virtualbox
+hosts:
+  go-to-live-kata:
+    groups:
+    - group1
+installed_deps: true
+multiple_platforms: null

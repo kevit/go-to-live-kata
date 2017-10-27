@@ -1,0 +1,73 @@
+ntp_timezone: 'Etc/UTC'
+##
+apt_cache_valid_time: 3600
+apt_package_state: present
+apt_security_package_state: latest
+apt_dev_package_state: latest
+sites_using_remote_db: ''
+mysql_root_password: 'pass'
+##
+wp_version: '4.8.2'
+wp_install_dir: '/var/sites/awesome_wordpress_site'
+wp_db_name: 'wordpress'
+wp_db_user: 'wordpress'
+wp_db_password: 'wordpress'
+wp_db_host: 'localhost'
+wp_db_charset: 'utf8'
+wp_db_collate: ''
+wp_table_prefix: 'wp_'
+wp_debug: false
+wp_fs_method: 'direct'
+wp_lang: ''
+wp_mysql_enable: true
+wp_mysql_db_create: true
+
+
+##
+
+wordpress_installs:
+  - name: wordpress
+    dbname: wordpress
+    dbuser: wordpress
+    dbpass: 'wordpress'
+    dbhost: localhost
+    path: /var/sites/awesome_wordpress_site
+    url: http://localhost
+    title: wordpress
+    admin_name: admin
+    admin_email: root@localhost.localdomain
+    admin_password: 'pass'
+    themes:
+      - name: twentytwelve
+        activate: true
+      - name: twentythirteen
+    plugins:
+      - name: contact-form-7
+        activate: false
+      - name: simple-fields
+    users: {}
+    options: []
+    queries: []
+
+wordpress_sites:
+  example.com:
+    site_hosts:
+      - canonical: example.com
+        redirects:
+          - www.example.com
+    ssl:
+      enabled: false
+      provider: letsencrypt
+    cache:
+      enabled: false
+
+##firewall
+ferm_input_group_list:
+  - type: "dport_accept"
+    dport: ["http", "https","ssh"]
+    filename: "nginx_accept"
+  - type: "dport_accept"
+    dport: ["ssh"]
+    filename: "ssh_accept"
+
+ip_whitelist: "0.0.0.0/0"

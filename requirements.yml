@@ -1,0 +1,3 @@
+- src: darthwade.wordpress
+- src: https://github.com/Oefenweb/ansible-wordpress
+  name: oefenweb.wordpress
