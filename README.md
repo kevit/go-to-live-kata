@@ -1,6 +1,14 @@
 Go to live! kata
 ==================================
 
+Short manual
+==================================
+
+Run  "molecule test" to check the playbook
+
+
+
+
 Contained in this repo, there are some instructions for a new application that will go live in the next month!
 
 You will need to:

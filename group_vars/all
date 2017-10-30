@@ -1,12 +1,27 @@
 ntp_timezone: 'Etc/UTC'
-##
+mysql_root_password: 'pass'
+sites_using_remote_db: ''
+site_hostname: "localhost"
+##apt settings
 apt_cache_valid_time: 3600
 apt_package_state: present
 apt_security_package_state: latest
 apt_dev_package_state: latest
-sites_using_remote_db: ''
-mysql_root_password: 'pass'
+##firewall config
+ferm_input_group_list:
+  - type: "dport_accept"
+    dport: ["http", "https","ssh"]
+    filename: "nginx_accept"
+  - type: "dport_accept"
+    dport: ["ssh"]
+    filename: "ssh_accept"
+
+ip_whitelist: "0.0.0.0/0"
+
+
 ##
+
+##WP general settings
 wp_version: '4.8.2'
 wp_install_dir: '/var/sites/awesome_wordpress_site'
 wp_db_name: 'wordpress'
@@ -21,10 +36,7 @@ wp_fs_method: 'direct'
 wp_lang: ''
 wp_mysql_enable: true
 wp_mysql_db_create: true
-
-
-##
-
+##WP site settings
 wordpress_installs:
   - name: wordpress
     dbname: wordpress
@@ -32,7 +44,7 @@ wordpress_installs:
     dbpass: 'wordpress'
     dbhost: localhost
     path: /var/sites/awesome_wordpress_site
-    url: http://localhost
+    url: http://{{site_hostname}}
     title: wordpress
     admin_name: admin
     admin_email: root@localhost.localdomain
@@ -40,34 +52,37 @@ wordpress_installs:
     themes:
       - name: twentytwelve
         activate: true
-      - name: twentythirteen
     plugins:
-      - name: contact-form-7
-        activate: false
-      - name: simple-fields
+      - name: simple-fields      
     users: {}
     options: []
     queries: []
+##Webserver settings
+nginx_http_params:
+  - client_max_body_size 2048m
+  - server_tokens off
+nginx_sites:
+  "{{site_hostname}}": 
+    - root {{wp_install_dir}}
+    - listen 80 default_server
+    - index index.php
+    - location / { try_files $uri $uri/ /index.php?$args; }
+    - location ~ \.php$ {include fastcgi_params; fastcgi_intercept_errors on; fastcgi_pass php; fastcgi_buffers 16 16k; fastcgi_buffer_size 32k;}
+    - location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ { expires max; log_not_found off; }
+nginx_configs:
+  upstream:
+    - upstream php { server unix:/run/php/php7.1-fpm.sock; }
 
-wordpress_sites:
-  example.com:
-    site_hosts:
-      - canonical: example.com
-        redirects:
-          - www.example.com
-    ssl:
-      enabled: false
-      provider: letsencrypt
-    cache:
-      enabled: false
 
-##firewall
-ferm_input_group_list:
-  - type: "dport_accept"
-    dport: ["http", "https","ssh"]
-    filename: "nginx_accept"
-  - type: "dport_accept"
-    dport: ["ssh"]
-    filename: "ssh_accept"
+#wordpress_sites:
+#  example.com:
+#    site_hosts:
+#      - canonical: example.com
+#        redirects:
+#          - www.example.com
+#    ssl:
+#      enabled: false
+#      provider: letsencrypt
+#    cache:
+#      enabled: false
 
-ip_whitelist: "0.0.0.0/0"

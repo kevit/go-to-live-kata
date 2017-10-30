@@ -45,9 +45,11 @@
 - name: Configure wordpress instance
   include_role:
     name: oefenweb.wordpress
+
 - name: Install and configure nginx frontend
-  include_role:
-    name: nginx 
+  include_role: 
+    name: jdauphant.nginx
+
 - name: Install ssh protection
   include_role:
     name: fail2ban 
